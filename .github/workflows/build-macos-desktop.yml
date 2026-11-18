@@ -1,0 +1,50 @@
+name: Build macOS desktop installer
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build universal DMG
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            web/package-lock.json
+            server/package-lock.json
+            desktop/package-lock.json
+
+      - name: Install web dependencies
+        run: npm ci --no-audit --no-fund
+        working-directory: web
+
+      - name: Install server dependencies
+        run: npm ci --no-audit --no-fund
+        working-directory: server
+
+      - name: Install desktop build dependencies
+        run: npm ci --no-audit --no-fund
+        working-directory: desktop
+
+      - name: Build universal macOS installer
+        run: npm run package:mac -- --universal
+        working-directory: desktop
+
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Lord-Minds-macOS-installer
+          path: desktop/dist/*.dmg
+          if-no-files-found: error
+          retention-days: 30

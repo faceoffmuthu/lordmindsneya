@@ -1,0 +1,55 @@
+{
+  "name": "lord-minds-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Native desktop launcher for Lord Minds",
+  "main": "main.cjs",
+  "scripts": {
+    "dev": "npm run build:web && electron .",
+    "build:web": "node scripts/sync-web.cjs",
+    "prepare:package": "node scripts/prepare-package.cjs",
+    "package:win": "npm run prepare:package && electron-builder --win nsis",
+    "package:mac": "npm run prepare:package && electron-builder --mac dmg"
+  },
+  "devDependencies": {
+    "electron": "^35.1.5",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.lordminds.desktop",
+    "productName": "Lord Minds",
+    "asar": true,
+    "files": [
+      "main.cjs",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": ".stage/server",
+        "to": "server",
+        "filter": [
+          "**/*",
+          "!node_modules{,/**}"
+        ]
+      },
+      {
+        "from": ".stage/server/node_modules",
+        "to": "server/node_modules",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "category": "public.app-category.productivity"
+    }
+  }
+}

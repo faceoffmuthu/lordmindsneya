@@ -1,0 +1,32 @@
+# Lord Minds behind an existing Traefik (HTTPS via Let's Encrypt).
+#   docker compose -f docker-compose.traefik.yml up -d --build
+# Needs in .env: LORDMINDS_HOST, TRAEFIK_NETWORK, TRAEFIK_CERTRESOLVER (and PUBLIC_URL=https://$LORDMINDS_HOST).
+services:
+  lordminds:
+    build: .
+    image: lordminds:latest
+    container_name: lordminds
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      N8N_LOCAL_ENABLED: "false"
+    volumes:
+      - openforge-data:/data
+    networks: [traefik]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=${TRAEFIK_NETWORK}
+      - traefik.http.routers.lordminds.rule=Host(`${LORDMINDS_HOST}`)
+      - traefik.http.routers.lordminds.entrypoints=web,websecure
+      - traefik.http.routers.lordminds.tls=true
+      - traefik.http.routers.lordminds.tls.certresolver=${TRAEFIK_CERTRESOLVER}
+      - traefik.http.routers.lordminds.service=lordminds
+      - traefik.http.services.lordminds.loadbalancer.server.port=3000
+
+networks:
+  traefik:
+    name: ${TRAEFIK_NETWORK}
+    external: true
+
+volumes:
+  openforge-data:

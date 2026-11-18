@@ -1,0 +1,42 @@
+# Lord Minds — run it anywhere:  ./deploy.sh   (or: cp .env.example .env && docker compose up -d --build)
+# Then open http://localhost:3000 (or your PUBLIC_URL) and create the admin account.
+services:
+  lordminds:
+    build: .
+    image: lordminds:latest
+    container_name: lordminds
+    restart: unless-stopped
+    init: true             # forwards Ctrl-C / docker stop to Node, so it shuts down cleanly
+    env_file: .env
+    ports:
+      - "${LORDMINDS_PORT:-${OPENFORGE_PORT:-3000}}:3000"
+    volumes:
+      - openforge-data:/data
+    environment:
+      N8N_LOCAL_ENABLED: "true"
+      N8N_INTERNAL_URL: http://n8n:5678
+      N8N_LOCAL_URL: ${N8N_PUBLIC_URL:-http://localhost:5678}
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.47.4
+    container_name: lordminds-n8n
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${N8N_PORT:-5678}:5678"
+    environment:
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      N8N_EDITOR_BASE_URL: ${N8N_PUBLIC_URL:-http://localhost:5678}
+      WEBHOOK_URL: ${N8N_PUBLIC_URL:-http://localhost:5678}/
+      GENERIC_TIMEZONE: ${GENERIC_TIMEZONE:-Asia/Kolkata}
+      TZ: ${GENERIC_TIMEZONE:-Asia/Kolkata}
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+      N8N_DIAGNOSTICS_ENABLED: "false"
+    volumes:
+      - lordminds-n8n-data:/home/node/.n8n
+
+volumes:
+  openforge-data:
+  lordminds-n8n-data:
+    name: lordminds-n8n-data

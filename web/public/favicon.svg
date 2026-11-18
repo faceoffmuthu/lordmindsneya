@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Lord Minds">
+  <rect width="240" height="240" rx="44" fill="#fff"/>
+  <path d="M25 20H230V37H43L25 20Z" fill="#4F80B8"/>
+  <path d="M25 38L42 54V220H25V38Z" fill="#4F80B8"/>
+  <path d="M57 57L77 77V190H177L207 220H57V57Z" fill="#4F80B8"/>
+  <path d="M94 67L145 116L229 36V211L207 190V88L146 147L116 118V165H94V67Z" fill="#E0B509"/>
+</svg>
