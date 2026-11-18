@@ -8,8 +8,12 @@ permissions:
 
 jobs:
   build:
-    name: Build universal DMG
+    name: Build ${{ matrix.arch }} DMG
     runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [arm64, x64]
 
     steps:
       - name: Check out source
@@ -37,14 +41,14 @@ jobs:
         run: npm ci --no-audit --no-fund
         working-directory: desktop
 
-      - name: Build universal macOS installer
-        run: npm run package:mac -- --universal
+      - name: Build macOS installer
+        run: npm run package:mac -- --${{ matrix.arch }}
         working-directory: desktop
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: Lord-Minds-macOS-installer
+          name: Lord-Minds-macOS-${{ matrix.arch }}
           path: desktop/dist/*.dmg
           if-no-files-found: error
           retention-days: 30

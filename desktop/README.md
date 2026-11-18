@@ -33,7 +33,7 @@ npm run package:mac -- --universal
 
 ## Build a Mac installer from Windows
 
-Windows cannot build a `.dmg`. This repository includes `.github/workflows/build-macos-desktop.yml`, which runs the universal build on a GitHub-hosted Mac. Push the project to a GitHub repository, open **Actions → Build macOS desktop installer → Run workflow**, then download the **Lord-Minds-macOS-installer** artifact. The resulting `.dmg` can be shared and installed on a Mac.
+Windows cannot build a `.dmg`. This repository includes `.github/workflows/build-macos-desktop.yml`, which runs Apple Silicon and Intel builds on GitHub-hosted Macs. Push the project to a GitHub repository, open **Actions → Build macOS desktop installer → Run workflow**, then download the matching `Lord-Minds-macOS-arm64` or `Lord-Minds-macOS-x64` artifact. The resulting `.dmg` can be shared and installed on a Mac.
 
 The packaging process creates a clean staging copy of the server, including its verified production dependencies. It deliberately excludes `server/data` and `.env`, so an installer never contains local accounts, API keys or database data.
 
