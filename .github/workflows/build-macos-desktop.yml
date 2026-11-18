@@ -41,14 +41,14 @@ jobs:
         run: npm ci --no-audit --no-fund
         working-directory: desktop
 
-      - name: Build macOS installer
-        run: npm run package:mac -- --${{ matrix.arch }}
+      - name: Build macOS package installer
+        run: npm run package:mac:pkg -- --${{ matrix.arch }}
         working-directory: desktop
 
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
-          name: Lord-Minds-macOS-${{ matrix.arch }}
-          path: desktop/dist/*.dmg
+          name: Lord-Minds-macOS-${{ matrix.arch }}-pkg
+          path: desktop/dist/*.pkg
           if-no-files-found: error
           retention-days: 30
